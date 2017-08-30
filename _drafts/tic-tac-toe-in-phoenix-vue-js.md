@@ -4,23 +4,31 @@ title: Tic-Tac-Toe with Phoenix & Vue [Part 1]
 subtitle: Creating the game engine
 categories: phoenix elixir vue.js
 ---
-In this tutorial series we are going to write a webapp that enables 2 players to play the  [Tic-Tac-Toe](https://en.wikipedia.org/wiki/Tic-tac-toe) game online. 
+## Introduction
+In this tutorial series, we are going to write a web-app that enables 2 players to play the  [Tic-Tac-Toe](https://en.wikipedia.org/wiki/Tic-tac-toe) game online. 
 It will be leveraging the OTP platform to make the app scalable and fault tolerant and consist of the following elements:
 
-* **Tic-Tac-Toe engine** - A seperate elixir app that houses all our game logic
+* **Tic-Tac-Toe engine** - A separate elixir app that houses all our game logic
 * **Backend** - A Phoenix web-app that will serve our frontend and handles the communication between the frontend and the game engine
 * **Frontend** - The frontend will be written in Vue.JS
 
-## Tutorial series
+## Tutorial series 
+{:.no_toc}
+
 1. [Creating the game engine [Part 1]](#)
 2. Wrap it up in a server (GenServer & Supervision) [Part 2]
-3. Exposing our game to the web with Phoenix [Part 3]
+3. Building a web interface with Phoenix [Part 3]
 4. Setting up Vue.js with Phoenix [Part 4]
 5. Creating the Vue.js frontend [Part 5]
-6. Hooking up frontend and backend through Pheonix Channels [Part 6]
+6. Real-time Tic-Tac-Toe with Phoenix Channels [Part 6]
 
+## Table of contents
+{:.no_toc}
+* TOC
+{:toc headers: ['h4']}
 
-## Creating the game engine
+## Creating the project
+
 Let's get right to it. Open up the terminal and create a new mix project: 
 `mix new tic_tac_toe --umbrella`
 
@@ -56,23 +64,26 @@ Since we are going to make at least 2 different apps (game engine & web app), we
 Your Mix project was created successfully.
 ```
 
-### Defining the Game module
-How are we going to define the board structure? Coming from an imperative language like Java, you say: Easy! We will use a 1 or 2 dimensional array to represent our grid. However, elixir is not imperative, but functional. In fact, it doesn't have support for array's at all!
-No problem, we can just use the `Enum.at(list, index)` function.
+## Defining the Game module
+How are we going to define the board structure? Coming from an imperative language like Java, you say: Easy! We will use a 1 or 2-dimensional array to represent our grid. However, Elixir is not imperative, but functional. In fact, it doesn't have support for arrays at all!
+No problem, we can just use lists and retrieve an element with the `Enum.at(list, index)` function.
 
-> Note this operation takes linear time. In order to access the element at index index, it will need to traverse index previous elements.<br />
+> Note this operation takes linear time. In order to access the element at index `index`, it will need to traverse `index` previous elements.<br />
 *[Enum.at Docs](https://hexdocs.pm/elixir/Enum.html#at/3)*
 
-As you can read above, random access on a linked list is O(n), we can do better.
+As you can read above, random access on a linked list is O(n), we can do better. See, we do need arrays! You might be yelling out loud.
 Ask yourself: **Do we really need arrays?**
 
 * Iterate sequentially -> Linked list works fine
 * Access randomly -> Use a map
  
-The answer is **no**, we never need arrays. Map's provide us with fast lookup times. Now we have this part out of the way, it becomes clear how we should structure the data of our grid-based game, with maps. 
-We will have 2 different maps: `x` & `o`, containing all the taken cells of player 1 and 2. This is all we need for now. Our game module will look like this (`tic_tac_toe/apps/engine/lib/engine/game.ex`):
+The answer is **no**, we don't really need arrays. Maps provide us with fast lookup times and they are a fine solution to deal with grids in a functional language like Elixir. 
 
-```elixir
+Now we have this part out of the way, it becomes clear how we should structure the data of our grid-based game, with maps. 
+We will have 2 different maps: `x` & `o`, containing all the taken cells of player 1 and 2. This is all we need for now. Our game module will look like this :
+
+
+{% codeblock lang:elixir /lib/engine/game.ex %}
 defmodule Game do
   
   @enforce_keys :turns
@@ -82,14 +93,37 @@ defmodule Game do
     %Game{turns: %{x: MapSet.new, o: MapSet.new}}
   end
 end
-```
+{% endcodeblock %}
+
 The `Board.new` function will initialize the board for us. <br />
 Wait a moment... We decided to use maps, what are those `MapSet`'s?
 
 {: .box-note}
-Sets can't contain duplicate items. A MapSet uses a Map behind the scenes and simply puts a dummy value when you put a new key: `Map.put(key, @dummy_value)`
+Sets can't contain duplicate items. A MapSet uses a Map behind the scenes and simply puts a dummy value when you add a new key: `Map.put(key, @dummy_value)`. 
+For more info on MapSet's, [see the docs](https://hexdocs.pm/elixir/MapSet.html)
 
-### Taking a turn
+For our simple game engine, we need two public functions to make our game playable.
+A `take turn` function, where a player takes a turn, and a `game status` function. The latter we need so we can know if the game has been finished, if it was a draw, who won the game or if the game is still ongoing.
+
+{% codeblock lang:elixir /lib/engine/game.ex %}
+defmodule Game do
+  
+  @enforce_keys :turns
+  defstruct :turns
+
+  def new do
+    %Game{turns: %{x: MapSet.new, o: MapSet.new}}
+  end
+
+  def take_turn(game, player_symbol, cell) do # ... end
+
+  def status(game) do #... end
+end
+{% endcodeblock %}
+
+In the following chapters we are going to work out these 2 functions, so we get a playable Tic-Tac-Toe game in the end. Stay tuned!
+
+## Taking a turn
 
 We create a `take_turn` function that looks like this:
 
@@ -108,13 +142,13 @@ The method will return:
   - `{:error, :already_taken}` - When the cell is already taken
 
 ### Testing
-TDD is a trending thing to do in our modern agile way of working, and not without reason. The idea of this development method is to write your tests before writing the actual code. This way we avoid writing tests that are influenced heavily by our already written code. I always think it is a bit boring to write tests (don't we all) and it can feel so cumbersum at times. But after making it part of your developing cycle, writing and using these test will be a breeze.
+TDD is a trending thing to do in our modern agile way of working, and not without reason. The idea of this development method is to write your tests before writing the actual code. This way we avoid writing tests that are influenced heavily by our already written code. I always think it is a bit boring to write tests (don't we all) and it can feel so cumbersome at times. But after making it part of your developing cycle, writing and using these test will be a breeze.
 
-Above all, Elixir is a joy to test. Duo its functional nature, having immutable data, it is dead easy to write tests for those, often small, functions. Something goes in & someting goes out, plain & simple. We will be using ExUnit to write our tests. It is a solid testing framework that is easy to pick up.
+Above all, Elixir is a joy to test. Duo its functional nature, having immutable data, it is dead easy to write tests for those, often small, functions. Something goes in & something goes out, plain & simple. We will be using ExUnit to write our tests. It is a solid testing framework that is easy to pick up.
 
-Let's try to adhere the following phrase `better sooner then later` instead of `better late then never` when it comes to testing ;) 
+Let's try to adhere the following phrase `better soon than late` instead of `better late than never` when it comes to testing ;) 
 
-```elixir
+{% codeblock lang:elixir /test/engine/game_test.ex %}
 defmodule EngineTest.GameTest do
   use ExUnit.Case
   alias Engine.Game
@@ -126,15 +160,16 @@ defmodule EngineTest.GameTest do
     assert {:ok, _game} = Game.take_turn(game, :x, {0, 0})
   end
 
-  test "player can't take a turn on a non-free cell" do
+  test "player can't make take a turn on a non-free cell" do
     game = Game.new
     {:ok, game} = Game.take_turn(game, :x, {0, 0})
 
     # Player already owns the cell
-    assert Game.take_turn(game, :x, {0, 0}) == {:error, :already_taken}
-    
+    assert Game.take_turn(game, :o, {0, 0}) == {:error, :already_taken}
+    {:ok, game} = Game.take_turn(game, :o, {0, 1})
+
     # Other player already owns the cell
-    assert Game.take_turn(game, :o, {0, 0}) == {:error, :already_taken}    
+    assert Game.take_turn(game, :x, {0, 1}) == {:error, :already_taken}    
   end
 
   test "player can't take a turn on a cell outside the grid" do
@@ -144,7 +179,7 @@ defmodule EngineTest.GameTest do
     assert Game.take_turn(game, :o, {0, 4}) == {:error, :out_of_bounds} 
   end
 end
-```
+{% endcodeblock %}
 We can run these tests with the `mix test` command. 
 
 {: .box-error}
@@ -180,16 +215,19 @@ We didn't implement the `cell_taken?` and `within_bounds?` functions yet, we wil
         # ...
     end
 ```
-The `cond` control flow structure shown above, is the equalivent of `if {} else if {} else {}` like you would see in imperative languages.
+The `cond` control flow structure shown here, is the equivalent of `if {} else if {} else {}` like you would see in imperative languages.
 
 ```elixir
   {:ok, update_in(game.turns[player_symbol], &MapSet.put(&1, cell))}
 ```
 The kernel's [update_in](https://hexdocs.pm/elixir/master/Kernel.html#update_in/2) function, can update a nested structure. It takes a function as the second argument. 
 Here we pass the `MapSet.put/2` function, so that we can add the new turn to our set.
-<br />`&MapSet.put(&1, cell)` is short for:
 
 ```elixir
+# This is the shorter version
+&MapSet.put(&1, cell)
+
+# Of this
 fn player_turns -> 
   MapSet.put(player_turns, cell)
 end
@@ -221,8 +259,9 @@ The 2 missing functions:
     |> Enum.any?(&Enum.member?(&1, cell))
   end
 ```
-The `within_bounds?` function is self-explanatory, we destructure the tuple into a column & row, then we check if those are in the `@board_range` (0..2).<br />
-For `cell_taken?`, we iterate through every entry in the `turns` map. Those entries will be the ones with the `:o` and `:x` key, which we created in the `Game.new` function. Then we check if any of those 2 entries contains the cell. If so, the cell is taken and it will return `true`, if not, `false`.
+The `within_bounds?` function is self-explanatory, we destructure the tuple into a column & row, then we check if those are in the `@board_range` (0..2).
+
+For `cell_taken?`, we iterate through every entry in the `turns` map. Those entries will contain the `x` and `o` turns. We check if any of those two sets contains the cell. If so, the cell is taken and it will return `true`, if not, `false`.
 
 Now if we run our tests again:
 
@@ -231,7 +270,7 @@ Now if we run our tests again:
 Finished in 0.04 seconds<br />
 3 tests, 0 failures<br />
 
-### Game status: Playing, Win & Draw
+## Game status: Playing, Win & Draw
 We need to know the status of the game. This status will tell us if the game is still playing, or if it has finished. If it is finished, it will also tell us what the result is.
 
 ```elixir
@@ -326,7 +365,7 @@ Now we have defined what the output of our `status` function looks like, it's ti
   end
 ```
 
-We are almost there, the last thing left to do is implementing `draw?` and `player_won?`. After this our game should be playable!
+We are almost there, the last thing left to do is implementing `draw?` and `player_won?`. After this, our game should be playable!
 
 Starting with the easiest of the two first:
 
@@ -361,12 +400,12 @@ true # So this player has won
 
 Now we just need to generate all the possible lines. Then we can check if **any** of those lines are a subset of the player turns, and thus a winner:
 
-```elixirt
+```elixir
   posibilities |> Enum.any?(&MapSet.subset?(&1, player_turns))
 ```
 
 **Horizontal & Vertical lines**<br />
-We use a nested for loop to combine them into 3 horizontal lines.
+We use a nested for loop to generate 3 horizontal lines.
 
 ```elixir
 iex(1)> range = 0..2
@@ -389,7 +428,7 @@ iex(3)> for col <- range, do: for row <- range, do: {col, row}
 ```
 
 **Diagonal lines**<br />
-We will always only have 2 diagonal lines (no matter how big the grid). Let's start with the one that goes from the top left cornern to the bottom right corner:
+We will only have 2 diagonal lines (no matter how big the grid). Let's start with the one that goes from the top left corner to the bottom right corner:
 
 ```elixir
 iex(4)> for i <- range, do: {i, i}
@@ -432,7 +471,7 @@ iex(6)> for i <- range, do: {i, max - i - 1}
   end
 ```
 
-We add all the lines together in one big list. After that we need to convert this list to MapSet's with `Enum.map`, so that we can utilize the `subset?` function that is exlained earlier.
+We add all the lines together in one big list. After that, we need to convert this list to MapSet's with `Enum.map`, so that we can utilize the `subset?` function that is explained earlier.
 
 
 {: .box-error}
@@ -479,17 +518,15 @@ Finished in 0.06 seconds<br />
 
 Hooray!
 
-### Final touch
+## Final touch
 
 The game is playable! Each player can take turns and we can check the status of the game. There are a few minor things that can still be improved though:
 
 * Enforce correct player symbols
 * Enforce players to take turns
-* Let the `take_turn` method return the status of the game
-  - The status can only change when a turn is made, so it would make sense to return the current status after each succesful turn
 
 **Enforce correct player symbols**<br />
-Start by adding an extra test:
+Make the following test work:
 
 ```elixir
   test "player can't take a turn with a wrong player symbol" do
@@ -498,6 +535,11 @@ Start by adding an extra test:
     assert Game.take_turn(game, :wrongsymb, {0, 0}) == {:error, :incorrect_player_symbol}
   end
 ```
+
+
+<details>
+<summary>Click here to see a possible solution</summary>
+<div markdown="1"> 
 Using guards:
 
 ```elixir
@@ -516,7 +558,7 @@ Using guards:
 
 ```
 
-Or adding to our exisiting `cond` block:
+Or adding to our existing `cond` block:
 
 ```elixir
   def take_turn(%Game{turns: turns} = game, player_symbol, cell)
@@ -532,6 +574,41 @@ Or adding to our exisiting `cond` block:
     end
   end
 ```
+</div>
+</details>
 
-TODO - Player need to take turns<br />
-TODO - Return new status after each turn<br />
+**Enforce players to take turns**<br />
+Make the following test work:
+
+```elixir
+  test "player can't take a turn twice in a row" do
+    game = Game.new
+    {:ok, game} = Game.take_turn(game, :x, {0, 0})
+    assert Game.take_turn(game, :x, {0, 1}) == {:error, :not_your_turn}
+  end
+```
+
+<details>
+<summary>Click here to see a possible solution</summary>
+<div markdown="1"> 
+
+```elixir
+  @enforce_keys [:turns]
+  defstruct [:turns, :last_player]
+
+  def take_turn(%Game{turns: turns, last_player: last_player} = game, player_symbol, cell) do
+    cond do
+      player_symbol == last_player -> # Check the last player
+        {:error, :not_your_turn}
+      cell_taken?(turns, cell) ->
+        {:error, :already_taken}
+      not within_bounds?(cell) ->
+        {:error, :out_of_bounds}
+      true ->
+        game = update_in(game.turns[player_symbol], &MapSet.put(&1, cell))
+        {:ok, %{game | last_player: player_symbol}} # Set the last player
+    end
+  end
+```
+</div>
+</details>
