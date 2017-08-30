@@ -152,10 +152,6 @@ GEM
       shellany (~> 0.0)
     octokit (4.7.0)
       sawyer (~> 0.8.0, >= 0.5.3)
-    octopress-code-highlighter (4.3.0)
-      jekyll (~> 3.0)
-    octopress-codeblock (1.0.5)
-      octopress-code-highlighter (~> 4.2)
     pathutil (0.14.0)
       forwardable-extended (~> 2.6)
     pry (0.10.4)
@@ -197,7 +193,6 @@ DEPENDENCIES
   guard-livereload (~> 2.5)
   jekyll-compose
   jekyll-paginate
-  octopress-codeblock
 
 BUNDLED WITH
    1.15.4
