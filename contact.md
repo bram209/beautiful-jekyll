@@ -1,7 +1,6 @@
 ---
 layout: page
 title: Contact me
-subtitle: Ss
+subtitle: Under construction
 ---
 
-Under construction

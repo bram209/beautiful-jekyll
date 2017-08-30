@@ -641,6 +641,28 @@ table tr td :last-child {
 
 /* --- Code blocks --- */
 
+.fileName{
+  padding: 0px;
+  margin: 0px;
+  background-color: #292929;
+  color: lightgrey;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  margin-bottom: 0px;
+  padding-left: 1em;
+  font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+  border-left: 0px;    
+}
+
+figure.code figcaption {
+  padding: 5px 10px;
+  background-color: #ddd;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  font-size: small;
+  font-weight: bold;
+}
+
 pre {
   font-size: 16px;
   line-height: 1.5em;
