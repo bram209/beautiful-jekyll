@@ -5,9 +5,7 @@ subtitle: Or is an adblocker the best solution after all?
 image: /img/adblock-logo.png
 ---
 
-I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. Namely, altering the hosts file on my PC to blacklist unwanted domains. 
-
-In this blog post I will briefly explain how both of these work and which one might be the best solution to an ad free internet experience.
+I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. We can alter the `hosts` file on our PC to blacklist domains.
 
 ## Table of contents
 {:.no_toc}
@@ -16,10 +14,10 @@ In this blog post I will briefly explain how both of these work and which one mi
 * TOC
 
 ## How do ad blockers work?
-Adblockers filter out unwanted content. These filters decide whether it should block or let through an ad.
-The filters are obtained from huge lists, the main one being [EasyList](https://easylist.to/). You can specify your own filter rules as well.
+Adblockers filter out unwanted content. These filter rules decide whether it should block/hide an ad or let it through.
+All those filters come from huge lists, the main one being [EasyList](https://easylist.to/). You can specify your own filter rules as well or add another reputable source.
 
-The adblocker compares every HTTP request with all the filtes. If the URL of such request matches one of the filters, the request is blocked.
+The adblocker compares every HTTP request with all the filter rules. If the URL of such request matches one of the filters, the request is blocked.
 
 <div class="box-note" markdown="1">
 **Pro's**
@@ -27,7 +25,7 @@ The adblocker compares every HTTP request with all the filtes. If the URL of suc
 * UI interface (easily disable adblocker on specific sites)
 
 **Con's**
-* Slower than using a hosts file 
+* Slower than the hosts file approach 
 </div>
 
 ## The hosts file
@@ -67,7 +65,7 @@ Now the domain name `local` will translate to our localhost's address `127.0.0.1
 <br /><br />
 
 ## Blocking ads, trackers & malware
-We can use this mechanism to our advantage by blocking ads. trackers & malware domains. Luckily there are some create reputable lists like [someonewhocares](http://someonewhocares.org/hosts/). 
+We can use this mechanism to our advantage by blocking ads. trackers & malware domains. Luckily there are some great and reputable lists like [someonewhocares](http://someonewhocares.org/hosts/). 
 
 We are going to use [hBlock](https://github.com/zant95/hBlock), a script that combines a few good lists together to create the perfect hosts file.
 To install:
@@ -102,7 +100,7 @@ Now run it:
 You might need to restart your network manager or clear the DNS cache. For restarting the manager in linux: `sudo systemctl restart NetworkManager.service`
 
 ## Automatically updating our hosts file
-The domain lists that we talked about earlier, are updated daily. Therefore, we should update our hosts file daily as while.
+The domain lists that we talked about earlier, are updated daily. Therefore, we should update our hosts file daily as well.
 
 Let's create an automatic task for this. You can create a [cronjob](https://en.wikipedia.org/wiki/Cron) for example, but since my distro uses `systemd`, I will create a [systemd timer](https://wiki.archlinux.org/index.php/Systemd/Timers).
 
@@ -134,8 +132,8 @@ Description=Update hosts file to block ad, tracker & malware domains
 # do a single job and then exit
 Type=oneshot 
 
-# Path to executable
-ExecStart=hblock 
+# Absolute path to executable
+ExecStart=/usr/local/bin/hblock
 {% endcodeblock %}
 
 Note that you can place comments with the `#` prefix, but they **must be on a new line**. All we have to do now, is enabling the timer and we are good to go:
