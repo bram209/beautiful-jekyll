@@ -1,24 +1,32 @@
----
-layout: null
----
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>{{ site.title | xml_escape }}</title>
-    <description>{{ site.description | xml_escape }}</description>
-    <link>{{ site.url }}</link>
-    <atom:link href="{{ site.url }}/feed.xml" rel="self" type="application/rss+xml" />
-    {% for post in site.posts limit:20 %}
+    <title>Bram Hoendervangers</title>
+    <description>Personal blog</description>
+    <link>http://bram209.github.io</link>
+    <atom:link href="http://bram209.github.io/feed.xml" rel="self" type="application/rss+xml" />
+    
       <item>
-        <title>{{ post.title | xml_escape }}</title>
+        <title>A better alternative to Adblock Plus</title>
         <description>
-          {% if post.subtitle %}{{ post.subtitle | xml_escape }} - {% endif %}
-          {{ post.content | strip_html | xml_escape | truncatewords: 50 }}
+          Or is an adblocker the best solution after all? - 
+          I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. Table of contents How do ad blockers work? The hosts file Blocking ads, trackers &amp;amp; malware Automatically updating our hosts file Verdict How do ad blockers work? Adblockers filter out...
         </description>
-        <pubDate>{{ post.date | date: "%a, %d %b %Y %H:%M:%S %z" }}</pubDate>
-        <link>{{ site.url }}{{ post.url }}</link>
-        <guid isPermaLink="true">{{ site.url }}{{ post.url }}</guid>
+        <pubDate>Thu, 07 Sep 2017 00:00:00 +0000</pubDate>
+        <link>http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/</link>
+        <guid isPermaLink="true">http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/</guid>
       </item>
-    {% endfor %}
+    
+      <item>
+        <title>Tic-Tac-Toe with Phoenix &amp; Vue [Part 1]</title>
+        <description>
+          Creating the game engine - 
+          Introduction In this tutorial series, we are going to write a web-app that enables 2 players to play the Tic-Tac-Toe game online. It will be leveraging the OTP platform to make the app scalable and fault tolerant and consist of the following elements: Tic-Tac-Toe engine - A separate elixir app...
+        </description>
+        <pubDate>Wed, 30 Aug 2017 00:00:00 +0000</pubDate>
+        <link>http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/</link>
+        <guid isPermaLink="true">http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/</guid>
+      </item>
+    
   </channel>
 </rss>
