@@ -5,7 +5,7 @@ subtitle: Or is an adblocker the best solution after all?
 image: /img/adblock-logo.png
 ---
 
-I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else.
+I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. We can alter the `hosts` file on our PC to blacklist domains. In this blog post I will briefly explain how both of these work and which one might be the best solution to an ad free internet experience.
 
 ## Table of contents
 {:.no_toc}
@@ -21,11 +21,11 @@ The adblocker compares every HTTP request with all the filter rules. If the URL 
 
 <div class="box-note" markdown="1">
 **Pro's**
-* More versatile, blocking based on URL paths and parameters
+* Versatile, blocking based on URL paths and parameters
 * UI interface (easily disable adblocker on specific sites)
 
 **Con's**
-* Slower 
+* Slower than using a hosts file 
 </div>
 
 ## The hosts file
