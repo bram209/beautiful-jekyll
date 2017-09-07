@@ -5,7 +5,9 @@ subtitle: Or is an adblocker the best solution after all?
 image: /img/adblock-logo.png
 ---
 
-I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. We can alter the `hosts` file on our PC to blacklist domains. In this blog post I will briefly explain how both of these work and which one might be the best solution to an ad free internet experience.
+I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. Namely, altering the hosts file on my PC to blacklist unwanted domains. 
+
+In this blog post I will briefly explain how both of these work and which one might be the best solution to an ad free internet experience.
 
 ## Table of contents
 {:.no_toc}
@@ -14,10 +16,10 @@ I have been using AdBlock Plus for years now. After reinstalling my desktop rece
 * TOC
 
 ## How do ad blockers work?
-Adblockers filter out unwanted content. These filter rules decide whether it should block/hide an ad or let it through.
-All those filters come from huge lists, the main one being [EasyList](https://easylist.to/). You can specify your own filter rules as well or add another reputable source.
+Adblockers filter out unwanted content. These filters decide whether it should block let through an ad 
+The filters are obtained from huge lists, the main one being [EasyList](https://easylist.to/). You can specify your own filter rules as well.
 
-The adblocker compares every HTTP request with all the filter rules. If the URL of such request matches one of the filters, the request is blocked.
+The adblocker compares every HTTP request with all the filtes. If the URL of such request matches one of the filters, the request is blocked.
 
 <div class="box-note" markdown="1">
 **Pro's**
