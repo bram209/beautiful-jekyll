@@ -16,7 +16,7 @@ In this blog post I will briefly explain how both of these work and which one mi
 * TOC
 
 ## How do ad blockers work?
-Adblockers filter out unwanted content. These filters decide whether it should block let through an ad 
+Adblockers filter out unwanted content. These filters decide whether it should block or let through an ad.
 The filters are obtained from huge lists, the main one being [EasyList](https://easylist.to/). You can specify your own filter rules as well.
 
 The adblocker compares every HTTP request with all the filtes. If the URL of such request matches one of the filters, the request is blocked.
