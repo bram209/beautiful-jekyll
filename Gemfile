@@ -8,6 +8,8 @@ gem 'github-pages', versions['github-pages']
 
 gem 'jekyll-paginate', versions['github-paginate']
 gem 'jekyll-compose', group: [:jekyll_plugins]
+gem 'jekyll-sitemap'
+gem 'jekyll-seo-tag'
 
 group :development do
   gem 'guard-livereload', '~> 2.5', require: false
