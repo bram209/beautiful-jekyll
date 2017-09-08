@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>Tic-Tac-Toe with Phoenix & Vue [Part 1]</title>
+
+  <meta name="author" content="Bram Hoendervangers" />
+
+  
+  <meta name="description" content="Creating the game engine">
+  
+
+  <link rel="alternate" type="application/rss+xml" title="Bram Hoendervangers - Personal blog" href="/feed.xml" />
+
+  
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="Tic-Tac-Toe with Phoenix & Vue [Part 1]" />
+  
+
+   
+  <meta property="og:description" content="Creating the game engine">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/" />
+  <link rel="canonical" href="http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/" />
+  
+
+  
+  
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@yourname" />
+  <meta name="twitter:creator" content="@yourname" />
+
+  
+  <meta name="twitter:title" content="Tic-Tac-Toe with Phoenix & Vue [Part 1]" />
+  
+
+  
+  <meta name="twitter:description" content="Creating the game engine">
+  
+
+  
+
+  <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>Tic-Tac-Toe with Phoenix &amp; Vue [Part 1] | Bram Hoendervangers</title>
+<meta property="og:title" content="Tic-Tac-Toe with Phoenix &amp; Vue [Part 1]" />
+<meta name="author" content="Bram Hoendervangers" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Introduction In this tutorial series, we are going to write a web-app that enables 2 players to play the Tic-Tac-Toe game online. It will be leveraging the OTP platform to make the app scalable and fault tolerant and consist of the following elements:" />
+<meta property="og:description" content="Introduction In this tutorial series, we are going to write a web-app that enables 2 players to play the Tic-Tac-Toe game online. It will be leveraging the OTP platform to make the app scalable and fault tolerant and consist of the following elements:" />
+<link rel="canonical" href="http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/" />
+<meta property="og:url" content="http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/" />
+<meta property="og:site_name" content="Bram Hoendervangers" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-08-30T00:00:00+00:00" />
+<script type="application/ld+json">
+{"name":null,"description":"Introduction In this tutorial series, we are going to write a web-app that enables 2 players to play the Tic-Tac-Toe game online. It will be leveraging the OTP platform to make the app scalable and fault tolerant and consist of the following elements:","url":"http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/","headline":"Tic-Tac-Toe with Phoenix &amp; Vue [Part 1]","dateModified":"2017-08-30T00:00:00+00:00","datePublished":"2017-08-30T00:00:00+00:00","sameAs":null,"@type":"BlogPosting","author":{"@type":"Person","name":"Bram Hoendervangers"},"image":null,"publisher":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+        <a class="navbar-brand" href="http://bram209.github.io">Bram Hoendervangers</a>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+            
+
+
+
+
+
+<a href="/aboutme">About Me</a>
+
+          </li>
+        
+        
+        
+          <li>
+            
+            
+
+
+
+
+
+<a href="/contact">Contact</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>Tic-Tac-Toe with Phoenix & Vue [Part 1]</h1>
+		  
+		    
+			<h2 class="post-subheading">Creating the game engine</h2>
+			
+		  
+		  
+		  
+		  <span class="post-meta">Posted on August 30, 2017</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      <article role="main" class="blog-post">
+        <h2 id="introduction">Introduction</h2>
+<p>In this tutorial series, we are going to write a web-app that enables 2 players to play the  <a href="https://en.wikipedia.org/wiki/Tic-tac-toe">Tic-Tac-Toe</a> game online. 
+It will be leveraging the OTP platform to make the app scalable and fault tolerant and consist of the following elements:</p>
+
+<ul>
+  <li><strong>Tic-Tac-Toe engine</strong> - A separate elixir app that houses all our game logic</li>
+  <li><strong>Backend</strong> - A Phoenix web-app that will serve our frontend and handles the communication between the frontend and the game engine</li>
+  <li><strong>Frontend</strong> - The frontend will be written in Vue.JS</li>
+</ul>
+
+<h2 class="no_toc" id="tutorial-series">Tutorial series</h2>
+
+<ol>
+  <li><a href="#">Creating the game engine [Part 1]</a></li>
+  <li>Wrap it up in a server (GenServer &amp; Supervision) [Part 2]</li>
+  <li>Building a web interface with Phoenix [Part 3]</li>
+  <li>Setting up Vue.js with Phoenix [Part 4]</li>
+  <li>Creating the Vue.js frontend [Part 5]</li>
+  <li>Real-time Tic-Tac-Toe with Phoenix Channels [Part 6]</li>
+</ol>
+
+<h2 class="no_toc" id="table-of-contents">Table of contents</h2>
+<ul id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+  <li><a href="#creating-the-project" id="markdown-toc-creating-the-project">Creating the project</a></li>
+  <li><a href="#defining-the-game-module" id="markdown-toc-defining-the-game-module">Defining the Game module</a></li>
+  <li><a href="#taking-a-turn" id="markdown-toc-taking-a-turn">Taking a turn</a>    <ul>
+      <li><a href="#testing" id="markdown-toc-testing">Testing</a></li>
+      <li><a href="#implementing-the-take_turn-function" id="markdown-toc-implementing-the-take_turn-function">Implementing the ‘take_turn’ function</a></li>
+    </ul>
+  </li>
+  <li><a href="#game-status-playing-win--draw" id="markdown-toc-game-status-playing-win--draw">Game status: Playing, Win &amp; Draw</a>    <ul>
+      <li><a href="#testing-1" id="markdown-toc-testing-1">Testing</a></li>
+      <li><a href="#implementing-the-status-function" id="markdown-toc-implementing-the-status-function">Implementing the ‘status’ function</a></li>
+    </ul>
+  </li>
+  <li><a href="#final-touch" id="markdown-toc-final-touch">Final touch</a></li>
+</ul>
+
+<h2 id="creating-the-project">Creating the project</h2>
+
+<p>Let’s get right to it. Open up the terminal and create a new mix project: 
+<code class="highlighter-rouge">mix new tic_tac_toe --umbrella</code></p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>mix new tic_tac_toe --umbrella
+<span class="k">*</span> creating .gitignore
+<span class="k">*</span> creating README.md
+<span class="k">*</span> creating mix.exs
+<span class="k">*</span> creating apps
+<span class="k">*</span> creating config
+<span class="k">*</span> creating config/config.exs
+
+Your umbrella project was created successfully.
+</code></pre>
+</div>
+
+<p>Since we are going to make at least 2 different apps (game engine &amp; web app), we add the <code class="highlighter-rouge">--umbrella</code> flag to generate an <a href="https://elixir-lang.org/getting-started/mix-otp/dependencies-and-umbrella-apps.html">umbrella project</a>.</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span><span class="nb">cd </span>tic_tac_toe/apps
+<span class="gp">&gt; </span>mix new engine
+<span class="k">*</span> creating README.md
+<span class="k">*</span> creating .gitignore
+<span class="k">*</span> creating mix.exs
+<span class="k">*</span> creating config
+<span class="k">*</span> creating config/config.exs
+<span class="k">*</span> creating lib
+<span class="k">*</span> creating lib/engine.ex
+<span class="k">*</span> creating lib/engine/application.ex
+<span class="k">*</span> creating <span class="nb">test</span>
+<span class="k">*</span> creating <span class="nb">test</span>/test_helper.exs
+<span class="k">*</span> creating <span class="nb">test</span>/engine_test.exs
+
+Your Mix project was created successfully.
+</code></pre>
+</div>
+
+<h2 id="defining-the-game-module">Defining the Game module</h2>
+<p>How are we going to define the board structure? Coming from an imperative language like Java, you say: Easy! We will use a 1 or 2-dimensional array to represent our grid. However, Elixir is not imperative, but functional. In fact, it doesn’t have support for arrays at all!
+No problem, we can just use lists and retrieve an element with the <code class="highlighter-rouge">Enum.at(list, index)</code> function.</p>
+
+<blockquote>
+  <p>Note this operation takes linear time. In order to access the element at index <code class="highlighter-rouge">index</code>, it will need to traverse <code class="highlighter-rouge">index</code> previous elements.<br />
+<em><a href="https://hexdocs.pm/elixir/Enum.html#at/3">Enum.at Docs</a></em></p>
+</blockquote>
+
+<p>As you can read above, random access on a linked list is O(n), we can do better. See, we do need arrays! You might be yelling out loud.
+Ask yourself: <strong>Do we really need arrays?</strong></p>
+
+<ul>
+  <li>Iterate sequentially -&gt; Linked list works fine</li>
+  <li>Access randomly -&gt; Use a map</li>
+</ul>
+
+<p>The answer is <strong>no</strong>, we don’t really need arrays. Maps provide us with fast lookup times and they are a fine solution to deal with grids in a functional language like Elixir.</p>
+
+<p>Now we have this part out of the way, it becomes clear how we should structure the data of our grid-based game, with maps. 
+We will have 2 different maps: <code class="highlighter-rouge">x</code> &amp; <code class="highlighter-rouge">o</code>, containing all the taken cells of player 1 and 2. This is all we need for now. Our game module will look like this :</p>
+
+<figure class="code"><figcaption><span>/lib/engine/game.ex </span></figcaption>
+<pre class="highlight"><code><span class="k">defmodule</span> <span class="no">Game</span> <span class="k">do</span>
+  
+  <span class="nv">@enforce_keys</span> <span class="ss">:turns</span>
+  <span class="n">defstruct</span> <span class="ss">:turns</span>
+
+  <span class="k">def</span> <span class="n">new</span> <span class="k">do</span>
+    <span class="p">%</span><span class="no">Game</span><span class="p">{</span><span class="ss">turns:</span> <span class="p">%{</span><span class="ss">x:</span> <span class="no">MapSet</span><span class="o">.</span><span class="n">new</span><span class="p">,</span> <span class="ss">o:</span> <span class="no">MapSet</span><span class="o">.</span><span class="n">new</span><span class="p">}}</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
+</figure>
+
+<p>The <code class="highlighter-rouge">Board.new</code> function will initialize the board for us. <br />
+Wait a moment… We decided to use maps, what are those <code class="highlighter-rouge">MapSet</code>’s?</p>
+
+<p class="box-note">Sets can’t contain duplicate items. A MapSet uses a Map behind the scenes and simply puts a dummy value when you add a new key: <code class="highlighter-rouge">Map.put(key, @dummy_value)</code>. 
+For more info on MapSet’s, <a href="https://hexdocs.pm/elixir/MapSet.html">see the docs</a></p>
+
+<p>For our simple game engine, we need two public functions to make our game playable.
+A <code class="highlighter-rouge">take turn</code> function, where a player takes a turn, and a <code class="highlighter-rouge">game status</code> function. The latter we need so we can know if the game has been finished, if it was a draw, who won the game or if the game is still ongoing.</p>
+
+<figure class="code"><figcaption><span>/lib/engine/game.ex </span></figcaption>
+<pre class="highlight"><code><span class="k">defmodule</span> <span class="no">Game</span> <span class="k">do</span>
+  
+  <span class="nv">@enforce_keys</span> <span class="ss">:turns</span>
+  <span class="n">defstruct</span> <span class="ss">:turns</span>
+
+  <span class="k">def</span> <span class="n">new</span> <span class="k">do</span>
+    <span class="p">%</span><span class="no">Game</span><span class="p">{</span><span class="ss">turns:</span> <span class="p">%{</span><span class="ss">x:</span> <span class="no">MapSet</span><span class="o">.</span><span class="n">new</span><span class="p">,</span> <span class="ss">o:</span> <span class="no">MapSet</span><span class="o">.</span><span class="n">new</span><span class="p">}}</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">player_symbol</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="k">do</span> <span class="c1"># ... end</span>
+
+  <span class="k">def</span> <span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span> <span class="k">do</span> <span class="c1">#... end</span>
+<span class="k">end</span></code></pre>
+</figure>
+
+<p>In the following chapters we are going to work out these 2 functions, so we get a playable Tic-Tac-Toe game in the end. Stay tuned!</p>
+
+<h2 id="taking-a-turn">Taking a turn</h2>
+
+<p>We create a <code class="highlighter-rouge">take_turn</code> function that looks like this:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="k">def</span> <span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">player_symbol</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+</code></pre>
+</div>
+<ul>
+  <li><code class="highlighter-rouge">game</code> - Our game state</li>
+  <li><code class="highlighter-rouge">player_symbol</code> - The symbol of the player that is in turn, can be either be <code class="highlighter-rouge">:x</code> or <code class="highlighter-rouge">:o</code></li>
+  <li><code class="highlighter-rouge">cell</code> - The cell needs to be a tuple in the following form: <code class="highlighter-rouge"><span class="p">{</span><span class="err">col,</span><span class="w"> </span><span class="err">row</span><span class="p">}</span></code></li>
+</ul>
+
+<p>The method will return:</p>
+
+<ul>
+  <li><code class="highlighter-rouge"><span class="p">{</span><span class="err">:ok,</span><span class="w"> </span><span class="err">game</span><span class="p">}</span></code> - When it succeeded in making the turn.</li>
+  <li><code class="highlighter-rouge"><span class="p">{</span><span class="err">:error,</span><span class="w"> </span><span class="err">reason</span><span class="p">}</span></code> - When it failed to make the turn.
+    <ul>
+      <li><code class="highlighter-rouge"><span class="p">{</span><span class="err">:error,</span><span class="w"> </span><span class="err">:out_of_bounds</span><span class="p">}</span></code> - When the cell is out of bounds</li>
+      <li><code class="highlighter-rouge"><span class="p">{</span><span class="err">:error,</span><span class="w"> </span><span class="err">:already_taken</span><span class="p">}</span></code> - When the cell is already taken</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="testing">Testing</h3>
+<p>TDD is a trending thing to do in our modern agile way of working, and not without reason. The idea of this development method is to write your tests before writing the actual code. This way we avoid writing tests that are influenced heavily by our already written code. I always think it is a bit boring to write tests (don’t we all) and it can feel so cumbersome at times. But after making it part of your developing cycle, writing and using these test will be a breeze.</p>
+
+<p>Above all, Elixir is a joy to test. Duo its functional nature, having immutable data, it is dead easy to write tests for those, often small, functions. Something goes in &amp; something goes out, plain &amp; simple. We will be using ExUnit to write our tests. It is a solid testing framework that is easy to pick up.</p>
+
+<p>Let’s try to adhere the following phrase <code class="highlighter-rouge">better soon than late</code> instead of <code class="highlighter-rouge">better late than never</code> when it comes to testing ;)</p>
+
+<figure class="code"><figcaption><span>/test/engine/game_test.ex </span></figcaption>
+<pre class="highlight"><code><span class="k">defmodule</span> <span class="no">EngineTest</span><span class="o">.</span><span class="no">GameTest</span> <span class="k">do</span>
+  <span class="kn">use</span> <span class="no">ExUnit</span><span class="o">.</span><span class="no">Case</span>
+  <span class="n">alias</span> <span class="no">Engine</span><span class="o">.</span><span class="no">Game</span>
+
+  <span class="n">doctest</span> <span class="no">Game</span>
+
+  <span class="n">test</span> <span class="sd">"</span><span class="s2">player can take a turn"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="n">assert</span> <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">_game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span>
+  <span class="k">end</span>
+
+  <span class="n">test</span> <span class="sd">"</span><span class="s2">player can't make take a turn on a non-free cell"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span>
+
+    <span class="c1"># Player already owns the cell</span>
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:already_taken</span><span class="p">}</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">})</span>
+
+    <span class="c1"># Other player already owns the cell</span>
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">})</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:already_taken</span><span class="p">}</span>    
+  <span class="k">end</span>
+
+  <span class="n">test</span> <span class="sd">"</span><span class="s2">player can't take a turn on a cell outside the grid"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">5</span><span class="p">,</span> <span class="m">8</span><span class="p">})</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:out_of_bounds</span><span class="p">}</span>  
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="o">-</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">})</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:out_of_bounds</span><span class="p">}</span>  
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">4</span><span class="p">})</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:out_of_bounds</span><span class="p">}</span> 
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
+</figure>
+<p>We can run these tests with the <code class="highlighter-rouge">mix test</code> command.</p>
+
+<p class="box-error"><strong>&gt; mix test /test/engine/game_test.ex <br /></strong>
+Finished in 0.04 seconds <br />
+3 tests, 3 failures</p>
+
+<p>This doesn’t look so good, we are going to implement some code in the next paragraph.</p>
+
+<h3 id="implementing-the-take_turn-function">Implementing the ‘take_turn’ function</h3>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="k">def</span> <span class="n">take_turn</span><span class="p">(%</span><span class="no">Game</span><span class="p">{</span><span class="ss">turns:</span> <span class="n">turns</span><span class="p">}</span> <span class="o">=</span> <span class="n">game</span><span class="p">,</span> <span class="n">player_symbol</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="k">do</span>
+    <span class="k">cond</span> <span class="k">do</span>
+      <span class="n">cell_taken?</span><span class="p">(</span><span class="n">turns</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:already_taken</span><span class="p">}</span>
+      <span class="ow">not</span> <span class="n">within_bounds?</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:out_of_bounds</span><span class="p">}</span>
+      <span class="no">true</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">update_in</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">turns</span><span class="p">[</span><span class="n">player_symbol</span><span class="p">],</span> <span class="o">&amp;</span><span class="no">MapSet</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="n">cell</span><span class="p">))}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+<p>We didn’t implement the <code class="highlighter-rouge">cell_taken?</code> and <code class="highlighter-rouge">within_bounds?</code> functions yet, we will do that soon, but first lets have a look at the code shown above.</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>    <span class="k">cond</span> <span class="k">do</span>
+      <span class="n">condition1</span> <span class="o">-&gt;</span>
+        <span class="c1"># ...</span>
+      <span class="n">condition2</span> <span class="o">-&gt;</span>
+        <span class="c1"># ...</span>
+      <span class="no">true</span> <span class="o">-&gt;</span>
+        <span class="c1"># ...</span>
+    <span class="k">end</span>
+</code></pre>
+</div>
+<p>The <code class="highlighter-rouge">cond</code> control flow structure shown here, is the equivalent of <code class="highlighter-rouge">if {} else if {} else {}</code> like you would see in imperative languages.</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">update_in</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">turns</span><span class="p">[</span><span class="n">player_symbol</span><span class="p">],</span> <span class="o">&amp;</span><span class="no">MapSet</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="n">cell</span><span class="p">))}</span>
+</code></pre>
+</div>
+<p>The kernel’s <a href="https://hexdocs.pm/elixir/master/Kernel.html#update_in/2">update_in</a> function, can update a nested structure. It takes a function as the second argument. 
+Here we pass the <code class="highlighter-rouge">MapSet.put/2</code> function, so that we can add the new turn to our set.</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code><span class="c1"># This is the shorter version</span>
+<span class="o">&amp;</span><span class="no">MapSet</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+
+<span class="c1"># Of this</span>
+<span class="k">fn</span> <span class="n">player_turns</span> <span class="o">-&gt;</span> 
+  <span class="no">MapSet</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">player_turns</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p class="box-note">For more information, have a look at: <a href="https://elixir-lang.org/crash-course.html#partials-and-function-captures-in-elixir">Partials and function captures</a></p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code><span class="n">iex</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">nested_map</span> <span class="o">=</span> <span class="p">%{</span> <span class="ss">test1:</span> <span class="p">%{</span> <span class="ss">test2:</span> <span class="p">%{</span> <span class="ss">test3:</span> <span class="p">%{</span> <span class="ss">test4:</span> <span class="m">10</span> <span class="p">}}}}</span>
+<span class="p">%{</span><span class="ss">test1:</span> <span class="p">%{</span><span class="ss">test2:</span> <span class="p">%{</span><span class="ss">test3:</span> <span class="p">%{</span><span class="ss">test4:</span> <span class="m">10</span><span class="p">}}}}</span>
+<span class="n">iex</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">update_in</span><span class="p">(</span><span class="n">nested_map</span><span class="p">[</span><span class="ss">:test1</span><span class="p">][</span><span class="ss">:test2</span><span class="p">][</span><span class="ss">:test3</span><span class="p">][</span><span class="ss">:test4</span><span class="p">],</span> <span class="k">fn</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="m">5</span> <span class="k">end</span><span class="p">)</span>
+<span class="p">%{</span><span class="ss">test1:</span> <span class="p">%{</span><span class="ss">test2:</span> <span class="p">%{</span><span class="ss">test3:</span> <span class="p">%{</span><span class="ss">test4:</span> <span class="m">15</span><span class="p">}}}}</span>
+</code></pre>
+</div>
+
+<p>The 2 missing functions:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="nv">@board_range</span> <span class="m">0</span><span class="o">..</span><span class="m">2</span>
+  
+  <span class="k">def</span> <span class="n">within_bounds?</span><span class="p">({</span><span class="n">c</span><span class="p">,</span> <span class="n">r</span><span class="p">})</span> <span class="k">do</span>
+    <span class="n">c</span> <span class="ow">in</span><span class="p">(</span><span class="nv">@board_range</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">r</span> <span class="ow">in</span><span class="p">(</span><span class="nv">@board_range</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">defp</span> <span class="n">cell_taken?</span><span class="p">(</span><span class="n">turns</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">turns</span>
+    <span class="o">|&gt;</span> <span class="no">Map</span><span class="o">.</span><span class="n">values</span>
+    <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">any?</span><span class="p">(</span><span class="o">&amp;</span><span class="no">Enum</span><span class="o">.</span><span class="n">member?</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="n">cell</span><span class="p">))</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+<p>The <code class="highlighter-rouge">within_bounds?</code> function is self-explanatory, we destructure the tuple into a column &amp; row, then we check if those are in the <code class="highlighter-rouge">@board_range</code> (0..2).</p>
+
+<p>For <code class="highlighter-rouge">cell_taken?</code>, we iterate through every entry in the <code class="highlighter-rouge">turns</code> map. Those entries will contain the <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">o</code> turns. We check if any of those two sets contains the cell. If so, the cell is taken and it will return <code class="highlighter-rouge">true</code>, if not, <code class="highlighter-rouge">false</code>.</p>
+
+<p>Now if we run our tests again:</p>
+
+<p class="box-success"><strong>&gt; mix test test/engine/game_test.exs<br /></strong>
+Finished in 0.04 seconds<br />
+3 tests, 0 failures<br /></p>
+
+<h2 id="game-status-playing-win--draw">Game status: Playing, Win &amp; Draw</h2>
+<p>We need to know the status of the game. This status will tell us if the game is still playing, or if it has finished. If it is finished, it will also tell us what the result is.</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="k">def</span> <span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span>
+</code></pre>
+</div>
+<p>The method will return:</p>
+
+<ul>
+  <li><code class="highlighter-rouge"><span class="p">{</span><span class="err">:finished,</span><span class="w"> </span><span class="err">{:won,</span><span class="w"> </span><span class="err">player</span><span class="p">}</span><span class="err">}</span></code> - If the game is finished</li>
+  <li><code class="highlighter-rouge"><span class="p">{</span><span class="err">:finished,</span><span class="w"> </span><span class="err">:draw</span><span class="p">}</span></code> - If the game is finished and it is a draw</li>
+  <li><code class="highlighter-rouge">:playing</code> - If the game is still playing</li>
+</ul>
+
+<h3 id="testing-1">Testing</h3>
+<p>Now we have defined what the output of our <code class="highlighter-rouge">status</code> function looks like, it’s time to do write some basic tests:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="n">test</span> <span class="sd">"</span><span class="s2">player 'x' wins the game with a horizontal line"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="n">make_turns</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="p">[{</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span><span class="m">0</span><span class="p">}],</span> <span class="ss">:x</span><span class="p">)</span>
+
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:finished</span><span class="p">,</span> <span class="p">{</span><span class="ss">:won</span><span class="p">,</span> <span class="ss">:x</span><span class="p">}}</span>
+  <span class="k">end</span>
+
+  <span class="n">test</span> <span class="sd">"</span><span class="s2">player 'x' wins the game with a vertical line"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="n">make_turns</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="p">[{</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span><span class="m">2</span><span class="p">}],</span> <span class="ss">:x</span><span class="p">)</span>
+
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:finished</span><span class="p">,</span> <span class="p">{</span><span class="ss">:won</span><span class="p">,</span> <span class="ss">:x</span><span class="p">}}</span>
+  <span class="k">end</span>
+
+  <span class="n">test</span> <span class="sd">"</span><span class="s2">player 'x' wins the game with a diagonal line"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="n">make_turns</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="p">[{</span><span class="m">0</span><span class="p">,</span><span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span><span class="m">2</span><span class="p">}],</span> <span class="ss">:x</span><span class="p">)</span>
+
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:finished</span><span class="p">,</span> <span class="p">{</span><span class="ss">:won</span><span class="p">,</span> <span class="ss">:x</span><span class="p">}}</span>
+  <span class="k">end</span>
+
+  <span class="n">test</span> <span class="sd">"</span><span class="s2">players play a draw"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">})</span>
+
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">})</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">})</span>
+
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">})</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">2</span><span class="p">})</span>
+
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span>
+
+    <span class="c1"># Not a draw yet ...</span>
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span> <span class="o">!=</span> <span class="p">:{</span><span class="ss">:finished</span><span class="p">,</span> <span class="ss">:draw</span><span class="p">}</span>
+
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">})</span>
+
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:finished</span><span class="p">,</span> <span class="ss">:draw</span><span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="n">test</span> <span class="sd">"</span><span class="s2">game status is playing when the game is not finished yet"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span> <span class="o">==</span> <span class="ss">:playing</span>
+
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:o</span><span class="p">,</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">})</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">})</span>
+
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">status</span><span class="p">(</span><span class="n">game</span><span class="p">)</span> <span class="o">==</span> <span class="ss">:playing</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">make_turns</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">turns</span><span class="p">,</span> <span class="n">player</span><span class="p">)</span> <span class="k">do</span>
+    <span class="no">Enum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">x_turns</span><span class="p">,</span> <span class="n">game</span><span class="p">,</span> <span class="k">fn</span> <span class="n">cell</span><span class="p">,</span> <span class="n">game</span> <span class="o">-&gt;</span> 
+        <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+        <span class="n">game</span>
+    <span class="k">end</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+
+<h3 id="implementing-the-status-function">Implementing the ‘status’ function</h3>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="k">def</span> <span class="n">status</span><span class="p">(%</span><span class="no">Game</span><span class="p">{</span><span class="ss">turns:</span> <span class="n">turns</span><span class="p">})</span> <span class="k">do</span>
+    <span class="k">cond</span> <span class="k">do</span>
+      <span class="n">player_won?</span><span class="p">(</span><span class="n">turns</span><span class="p">[</span><span class="ss">:x</span><span class="p">])</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:finished</span><span class="p">,</span> <span class="p">{</span><span class="ss">:won</span><span class="p">,</span> <span class="ss">:x</span><span class="p">}}</span>
+      <span class="n">player_won?</span><span class="p">(</span><span class="n">turns</span><span class="p">[</span><span class="ss">:o</span><span class="p">])</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:finished</span><span class="p">,</span> <span class="p">{</span><span class="ss">:won</span><span class="p">,</span> <span class="ss">:o</span><span class="p">}}</span>
+      <span class="n">draw?</span><span class="p">(</span><span class="n">turns</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:finished</span><span class="p">,</span> <span class="ss">:draw</span><span class="p">}</span>
+      <span class="no">true</span> <span class="o">-&gt;</span>
+        <span class="ss">:playing</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+
+<p>We are almost there, the last thing left to do is implementing <code class="highlighter-rouge">draw?</code> and <code class="highlighter-rouge">player_won?</code>. After this, our game should be playable!</p>
+
+<p>Starting with the easiest of the two first:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="k">defp</span> <span class="n">draw?</span><span class="p">(</span><span class="n">turns</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">turns</span>
+    <span class="o">|&gt;</span> <span class="no">Map</span><span class="o">.</span><span class="n">values</span>
+    <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">(</span><span class="no">MapSet</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">)</span> <span class="o">+</span> <span class="nv">&amp;2</span><span class="p">))</span>
+    <span class="o">&gt;=</span> <span class="ss">:math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="no">Enum</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nv">@board_range</span><span class="p">),</span> <span class="m">2</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+
+<p>We count all the turns of both players. If this number is the same as the total amount of cells in our grid, then we know it is a draw.
+We could do some pattern matching to unpack the <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">o</code> turns and do something like: <code class="highlighter-rouge">MapSet.size(x_turns) + MapSet.size(y_turns) &gt;= ...</code>, but hey, we as elixir fanboys re digging those pipelines, aren’t we?</p>
+
+<p>To check if a player has won, we need to use the <code class="highlighter-rouge">MapSet.subset?</code> function:</p>
+
+<p class="box-note"><strong>subset?(map_set1, map_set2)</strong><br />
+Checks if map_set1’s members are all contained in map_set2.<br />
+<a href="https://hexdocs.pm/elixir/MapSet.html#subset?/2">MapSet.html#subset?/2</a></p>
+
+<p>So imagine that we have a straight line: {0,0}, {1,0}, {2,0}<br />
+If we want to know if all points of this line exists in our set of turns:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code><span class="n">iex</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">hor_line</span> <span class="o">=</span> <span class="p">[{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">0</span><span class="p">}]</span>
+<span class="n">iex</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">player_turns</span> <span class="o">=</span> <span class="no">MapSet</span><span class="o">.</span><span class="n">new</span><span class="p">([{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">}])</span>
+<span class="n">iex</span><span class="p">(</span><span class="m">3</span><span class="p">)</span><span class="o">&gt;</span> <span class="no">MapSet</span><span class="o">.</span><span class="n">subset?</span><span class="p">(</span><span class="no">MapSet</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">hor_line</span><span class="p">),</span> <span class="n">player_turns</span><span class="p">)</span>
+<span class="no">true</span> <span class="c1"># So this player has won</span>
+</code></pre>
+</div>
+
+<p>Now we just need to generate all the possible lines. Then we can check if <strong>any</strong> of those lines are a subset of the player turns, and thus a winner:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="n">posibilities</span> <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">any?</span><span class="p">(</span><span class="o">&amp;</span><span class="no">MapSet</span><span class="o">.</span><span class="n">subset?</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="n">player_turns</span><span class="p">))</span>
+</code></pre>
+</div>
+
+<p><strong>Horizontal &amp; Vertical lines</strong><br />
+We use a nested for loop to generate 3 horizontal lines.</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code><span class="n">iex</span><span class="p">(</span><span class="m">1</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">range</span> <span class="o">=</span> <span class="m">0</span><span class="o">..</span><span class="m">2</span>
+<span class="n">iex</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">for</span> <span class="n">col</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="n">for</span> <span class="n">row</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="p">{</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">}</span>
+<span class="p">[</span>
+  <span class="p">[{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">0</span><span class="p">}],</span> <span class="c1"># Top horizontal line</span>
+  <span class="p">[{</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">}],</span> <span class="c1"># Middle horizontal line</span>
+  <span class="p">[{</span><span class="m">0</span><span class="p">,</span> <span class="m">2</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">}]</span>  <span class="c1"># Bottom horizontal line</span>
+<span class="p">]</span>
+</code></pre>
+</div>
+<p>For vertical lines, we simply switch the row and the column for each cell:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code><span class="n">iex</span><span class="p">(</span><span class="m">3</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">for</span> <span class="n">col</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="n">for</span> <span class="n">row</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="p">{</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">}</span>
+<span class="p">[</span>
+  <span class="p">[{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">2</span><span class="p">}],</span> <span class="c1"># Left vertical line</span>
+  <span class="p">[{</span><span class="m">1</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">2</span><span class="p">}],</span> <span class="c1"># Middle vertical line</span>
+  <span class="p">[{</span><span class="m">2</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">}]</span>  <span class="c1"># Right vertical line</span>
+<span class="p">]</span>
+</code></pre>
+</div>
+
+<p><strong>Diagonal lines</strong><br />
+We will only have 2 diagonal lines (no matter how big the grid). Let’s start with the one that goes from the top left corner to the bottom right corner:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code><span class="n">iex</span><span class="p">(</span><span class="m">4</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">for</span> <span class="n">i</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">}</span>
+<span class="p">[{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">2</span><span class="p">}]</span> <span class="c1"># Top left -&gt; Bottom right</span>
+</code></pre>
+</div>
+<p>For the other diagonal line (top right -&gt; bottom left), we will do the same, only will the column count down, instead of counting up:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code><span class="n">iex</span><span class="p">(</span><span class="m">5</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">max</span> <span class="o">=</span> <span class="no">Enum</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">range</span><span class="p">)</span>
+<span class="n">iex</span><span class="p">(</span><span class="m">6</span><span class="p">)</span><span class="o">&gt;</span> <span class="n">for</span> <span class="n">i</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">,</span> <span class="n">max</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="m">1</span><span class="p">}</span>
+<span class="p">[{</span><span class="m">0</span><span class="p">,</span> <span class="m">2</span><span class="p">},</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span> <span class="m">1</span><span class="p">},</span> <span class="p">{</span><span class="m">2</span><span class="p">,</span> <span class="m">0</span><span class="p">}]</span> <span class="c1"># Bottom left -&gt; Top right</span>
+</code></pre>
+</div>
+
+<p><strong>Tying it together</strong></p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="k">defp</span> <span class="n">player_won?</span><span class="p">(</span><span class="n">player_turns</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">posibilities</span> <span class="o">=</span> 
+      <span class="n">create_lines</span><span class="p">(</span><span class="nv">@board_range</span><span class="p">,</span> <span class="ss">:horizontal</span><span class="p">)</span> <span class="o">++</span>
+      <span class="n">create_lines</span><span class="p">(</span><span class="nv">@board_range</span><span class="p">,</span> <span class="ss">:vertical</span><span class="p">)</span> <span class="o">++</span>
+      <span class="n">create_lines</span><span class="p">(</span><span class="nv">@board_range</span><span class="p">,</span> <span class="ss">:diagonal</span><span class="p">)</span>
+    
+    <span class="n">posibilities</span>
+    <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="no">MapSet</span><span class="o">.</span><span class="n">new</span><span class="o">/</span><span class="m">1</span><span class="p">)</span>
+    <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">any?</span><span class="p">(</span><span class="o">&amp;</span><span class="no">MapSet</span><span class="o">.</span><span class="n">subset?</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="n">player_turns</span><span class="p">))</span>
+  <span class="k">end</span>
+
+  <span class="k">defp</span> <span class="n">create_lines</span><span class="p">(</span><span class="n">range</span><span class="p">,</span> <span class="ss">:horizontal</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">for</span> <span class="n">col</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="n">for</span> <span class="n">row</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="p">{</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="k">defp</span> <span class="n">create_lines</span><span class="p">(</span><span class="n">range</span><span class="p">,</span> <span class="ss">:vertical</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">for</span> <span class="n">col</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="n">for</span> <span class="n">row</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="p">{</span><span class="n">col</span><span class="p">,</span> <span class="n">row</span><span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="k">defp</span> <span class="n">create_lines</span><span class="p">(</span><span class="n">range</span><span class="p">,</span> <span class="ss">:diagonal</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">max</span> <span class="o">=</span> <span class="no">Enum</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">range</span><span class="p">)</span>
+    <span class="p">[(</span><span class="n">for</span> <span class="n">i</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">})]</span> <span class="o">++</span>
+      <span class="p">[(</span><span class="n">for</span> <span class="n">i</span> <span class="o">&lt;-</span> <span class="n">range</span><span class="p">,</span> <span class="k">do</span><span class="p">:</span> <span class="p">{</span><span class="n">i</span><span class="p">,</span> <span class="n">max</span> <span class="o">-</span> <span class="n">i</span><span class="p">})]</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+
+<p>We add all the lines together in one big list. After that, we need to convert this list to MapSet’s with <code class="highlighter-rouge">Enum.map</code>, so that we can utilize the <code class="highlighter-rouge">subset?</code> function that is explained earlier.</p>
+
+<p class="box-error"><strong>&gt; mix test test/engine/game_test.exs</strong><br />
+Finished in 0.06 seconds<br />
+8 tests, 1 failure</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>  1<span class="o">)</span> <span class="nb">test </span>players play a draw <span class="o">(</span>EngineTest.GameTest<span class="o">)</span>
+     <span class="nb">test</span>/engine/game_test.exs:55
+     Assertion with <span class="o">==</span> failed
+     code:  assert Game.status<span class="o">(</span>game<span class="o">)</span> <span class="o">==</span> :playing
+     left:  <span class="o">{</span>:finished, :draw<span class="o">}</span>
+     right: :playing
+     stacktrace:
+       <span class="nb">test</span>/engine/game_test.exs:70: <span class="o">(</span><span class="nb">test</span><span class="o">)</span>
+</code></pre>
+</div>
+
+<p>Oh no! We have a test failing :/<br />
+It appears that <code class="highlighter-rouge">draw?</code> is not working correctly:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="k">defp</span> <span class="n">draw?</span><span class="p">(</span><span class="n">turns</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">turns</span>
+    <span class="o">|&gt;</span> <span class="no">Map</span><span class="o">.</span><span class="n">values</span>
+    <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="o">&amp;</span><span class="p">(</span><span class="no">MapSet</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">)</span> <span class="o">+</span> <span class="nv">&amp;2</span><span class="p">))</span>
+    <span class="o">&gt;=</span> <span class="ss">:math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="no">Enum</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="nv">@board_range</span><span class="p">),</span> <span class="m">2</span><span class="p">)</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+<p>It has to do with the last line: <code class="highlighter-rouge">:math:pow(Enum.max(@board_range), 2)</code>.<br />
+Our range is <code class="highlighter-rouge">0..2</code>, meaning <code class="highlighter-rouge">[0, 1, 2]</code>. So the max of this range is <code class="highlighter-rouge">2</code>, but our intention was to calculate the amount of cells in our grid, which is 3x3=9.</p>
+
+<p>Let’s fix this mistake:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="ss">:math</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="no">Enum</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="nv">@board_range</span><span class="p">),</span> <span class="m">2</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p class="box-success"><strong>&gt; mix test test/engine/game_test.exs</strong><br />
+Finished in 0.06 seconds<br />
+8 tests, 0 failures</p>
+
+<p>Hooray!</p>
+
+<h2 id="final-touch">Final touch</h2>
+
+<p>The game is playable! Each player can take turns and we can check the status of the game. There are a few minor things that can still be improved though:</p>
+
+<ul>
+  <li>Enforce correct player symbols</li>
+  <li>Enforce players to take turns</li>
+</ul>
+
+<p><strong>Enforce correct player symbols</strong><br />
+Make the following test work:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="n">test</span> <span class="sd">"</span><span class="s2">player can't take a turn with a wrong player symbol"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:y</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:incorrect_player_symbol</span><span class="p">}</span>
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:wrongsymb</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:incorrect_player_symbol</span><span class="p">}</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+
+<details>
+<summary>Click here to see a possible solution</summary>
+<div>
+    <p>Using guards:</p>
+
+    <div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="nv">@player_symbols</span> <span class="p">[</span><span class="ss">:x</span><span class="p">,</span> <span class="ss">:o</span><span class="p">]</span>
+
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="n">take_turn</span><span class="p">(%</span><span class="no">Game</span><span class="p">{</span><span class="ss">turns:</span> <span class="n">turns</span><span class="p">}</span> <span class="o">=</span> <span class="n">game</span><span class="p">,</span> <span class="n">player_symbol</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> 
+    <span class="ow">when</span> <span class="n">player_symbol</span> <span class="ow">in</span> <span class="nv">@player_symbols</span> <span class="k">do</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">take_turn</span><span class="p">(</span><span class="n">_game</span><span class="p">,</span> <span class="n">_player_symbol</span><span class="p">,</span> <span class="n">_cell</span><span class="p">)</span> <span class="k">do</span>
+    <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:incorrect_player_symbol</span><span class="p">}</span>
+  <span class="k">end</span>
+
+</code></pre>
+    </div>
+
+    <p>Or adding to our existing <code class="highlighter-rouge">cond</code> block:</p>
+
+    <div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="k">def</span> <span class="n">take_turn</span><span class="p">(%</span><span class="no">Game</span><span class="p">{</span><span class="ss">turns:</span> <span class="n">turns</span><span class="p">}</span> <span class="o">=</span> <span class="n">game</span><span class="p">,</span> <span class="n">player_symbol</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span>
+    <span class="k">cond</span> <span class="k">do</span>
+      <span class="n">player_symbol</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nv">@player_symbols</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:incorrect_player_symbol</span><span class="p">}</span>
+      <span class="n">cell_taken?</span><span class="p">(</span><span class="n">turns</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:already_taken</span><span class="p">}</span>
+      <span class="ow">not</span> <span class="n">within_bounds?</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:out_of_bounds</span><span class="p">}</span>
+      <span class="no">true</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">update_in</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">turns</span><span class="p">[</span><span class="n">player_symbol</span><span class="p">],</span> <span class="o">&amp;</span><span class="no">MapSet</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="n">cell</span><span class="p">))}</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre>
+    </div>
+  </div>
+</details>
+
+<p><strong>Enforce players to take turns</strong><br />
+Make the following test work:</p>
+
+<div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="n">test</span> <span class="sd">"</span><span class="s2">player can't take a turn twice in a row"</span> <span class="k">do</span>
+    <span class="n">game</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">new</span>
+    <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">game</span><span class="p">}</span> <span class="o">=</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">0</span><span class="p">})</span>
+    <span class="n">assert</span> <span class="no">Game</span><span class="o">.</span><span class="n">take_turn</span><span class="p">(</span><span class="n">game</span><span class="p">,</span> <span class="ss">:x</span><span class="p">,</span> <span class="p">{</span><span class="m">0</span><span class="p">,</span> <span class="m">1</span><span class="p">})</span> <span class="o">==</span> <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:not_your_turn</span><span class="p">}</span>
+  <span class="k">end</span>
+</code></pre>
+</div>
+
+<details>
+<summary>Click here to see a possible solution</summary>
+<div>
+
+    <div class="language-elixir highlighter-rouge"><pre class="highlight"><code>  <span class="nv">@enforce_keys</span> <span class="p">[</span><span class="ss">:turns</span><span class="p">]</span>
+  <span class="n">defstruct</span> <span class="p">[</span><span class="ss">:turns</span><span class="p">,</span> <span class="ss">:last_player</span><span class="p">]</span>
+
+  <span class="k">def</span> <span class="n">take_turn</span><span class="p">(%</span><span class="no">Game</span><span class="p">{</span><span class="ss">turns:</span> <span class="n">turns</span><span class="p">,</span> <span class="ss">last_player:</span> <span class="n">last_player</span><span class="p">}</span> <span class="o">=</span> <span class="n">game</span><span class="p">,</span> <span class="n">player_symbol</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="k">do</span>
+    <span class="k">cond</span> <span class="k">do</span>
+      <span class="n">player_symbol</span> <span class="o">==</span> <span class="n">last_player</span> <span class="o">-&gt;</span> <span class="c1"># Check the last player</span>
+        <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:not_your_turn</span><span class="p">}</span>
+      <span class="n">cell_taken?</span><span class="p">(</span><span class="n">turns</span><span class="p">,</span> <span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:already_taken</span><span class="p">}</span>
+      <span class="ow">not</span> <span class="n">within_bounds?</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="p">{</span><span class="ss">:error</span><span class="p">,</span> <span class="ss">:out_of_bounds</span><span class="p">}</span>
+      <span class="no">true</span> <span class="o">-&gt;</span>
+        <span class="n">game</span> <span class="o">=</span> <span class="n">update_in</span><span class="p">(</span><span class="n">game</span><span class="o">.</span><span class="n">turns</span><span class="p">[</span><span class="n">player_symbol</span><span class="p">],</span> <span class="o">&amp;</span><span class="no">MapSet</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="n">cell</span><span class="p">))</span>
+        <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="p">%{</span><span class="n">game</span> <span class="o">|</span> <span class="ss">last_player:</span> <span class="n">player_symbol</span><span class="p">}}</span> <span class="c1"># Set the last player</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</code></pre>
+    </div>
+  </div>
+</details>
+
+      </article>
+
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id = "social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+  <!--- Share on Twitter -->
+    <a href="https://twitter.com/intent/tweet?text=Tic-Tac-Toe+with+Phoenix+%26+Vue+%5BPart+1%5D+http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/"
+      class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+  <!--- Share on Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/"
+      class="btn btn-social-icon btn-facebook" title="Share on Facebook">
+      <span class="fa fa-fw fa-facebook" aria-hidden="true"></span>
+      <span class="sr-only">Facebook</span>
+    </a>
+  
+
+  
+
+  
+  <!--- Share on LinkedIn -->
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://bram209.github.io/2017-08-30-tic-tac-toe-in-phoenix-vue-js/"
+      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pager blog-pager">
+        
+        
+        <li class="next">
+          <a href="/2017-09-07-a-better-alternative-to-adblock-plus/" data-toggle="tooltip" data-placement="top" title="A better alternative to Adblock Plus">Next Post &rarr;</a>
+        </li>
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	    var disqus_shortname = 'brams-blog';
+	    /* ensure that pages with query string get the same discussion */
+            var url_parts = window.location.href.split("?");
+            var disqus_url = url_parts[0];	    
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="https://github.com/bram209" title="GitHub">
+              <span class="fa-stack fa-lg" aria-hidden="true">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+              <span class="sr-only">GitHub</span>
+            </a>
+          </li>
+          
+		  
+	  
+      
+		  
+          <li>
+            <a href="mailto:bram.hoendervangers@gmail.com" title="Email me">
+              <span class="fa-stack fa-lg" aria-hidden="true">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+              <span class="sr-only">Email me</span>
+            </a>
+          </li>
+          
+		  
+          <li>
+            <a href="https://linkedin.com/in/bram-hoendervangers-9616bbba" title="LinkedIn">
+              <span class="fa-stack fa-lg" aria-hidden="true">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+              <span class="sr-only">LinkedIn</span>
+            </a>
+          </li>
+          
+		  
+		  
+      
+      
+      
+      
+      
+		  
+      
+      
+      
+        </ul>
+        <p class="copyright text-muted">
+		  Bram Hoendervangers
+		  &nbsp;&bull;&nbsp;
+		  2017
+
+		  
+	    </p>
+	        <!-- Please don't remove this, keep my open source work credited :) -->
+		<p class="theme-by text-muted">
+		  Theme by
+		  <a href="http://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+		</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+      	  document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/main.js"></script>
+    
+  
+
+
+
+	<!-- Google Analytics -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-105670561-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+	<!-- End Google Analytics -->
+
+
+  
+  </body>
+</html>

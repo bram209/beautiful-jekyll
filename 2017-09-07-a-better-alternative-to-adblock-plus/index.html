@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- Beautiful Jekyll | MIT license | Copyright Dean Attali 2016 -->
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>A better alternative to Adblock Plus</title>
+
+  <meta name="author" content="Bram Hoendervangers" />
+
+  
+  <meta name="description" content="Or is an adblocker the best solution after all?">
+  
+
+  <link rel="alternate" type="application/rss+xml" title="Bram Hoendervangers - Personal blog" href="/feed.xml" />
+
+  
+
+  
+    
+      
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.0/css/font-awesome.min.css" />
+
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="/css/bootstrap.min.css" />
+    
+      <link rel="stylesheet" href="/css/bootstrap-social.css" />
+    
+      <link rel="stylesheet" href="/css/main.css" />
+    
+  
+
+  
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic" />
+    
+      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800" />
+    
+  
+
+  
+
+  
+
+  
+
+    <!-- Facebook OpenGraph tags -->
+  
+
+  
+  <meta property="og:title" content="A better alternative to Adblock Plus" />
+  
+
+   
+  <meta property="og:description" content="Or is an adblocker the best solution after all?">
+  
+
+
+  <meta property="og:type" content="website" />
+
+  
+  <meta property="og:url" content="http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/" />
+  <link rel="canonical" href="http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/" />
+  
+
+  
+  
+
+  <!-- Twitter summary cards -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:site" content="@yourname" />
+  <meta name="twitter:creator" content="@yourname" />
+
+  
+  <meta name="twitter:title" content="A better alternative to Adblock Plus" />
+  
+
+  
+  <meta name="twitter:description" content="Or is an adblocker the best solution after all?">
+  
+
+  
+
+  <!-- Begin Jekyll SEO tag v2.3.0 -->
+<title>A better alternative to Adblock Plus | Bram Hoendervangers</title>
+<meta property="og:title" content="A better alternative to Adblock Plus" />
+<meta name="author" content="Bram Hoendervangers" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. We can alter the hosts file on our PC to blacklist domains." />
+<meta property="og:description" content="I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. We can alter the hosts file on our PC to blacklist domains." />
+<link rel="canonical" href="http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/" />
+<meta property="og:url" content="http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/" />
+<meta property="og:site_name" content="Bram Hoendervangers" />
+<meta property="og:image" content="http://bram209.github.io/img/adblock-logo.png" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2017-09-07T00:00:00+00:00" />
+<script type="application/ld+json">
+{"name":null,"description":"I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. We can alter the hosts file on our PC to blacklist domains.","url":"http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/","headline":"A better alternative to Adblock Plus","dateModified":"2017-09-07T00:00:00+00:00","datePublished":"2017-09-07T00:00:00+00:00","sameAs":null,"@type":"BlogPosting","author":{"@type":"Person","name":"Bram Hoendervangers"},"image":"http://bram209.github.io/img/adblock-logo.png","publisher":null,"mainEntityOfPage":{"@type":"WebPage","@id":"http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+</head>
+
+
+  <body>
+
+    
+  
+    <nav class="navbar navbar-default navbar-fixed-top navbar-custom">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#main-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+        <a class="navbar-brand" href="http://bram209.github.io">Bram Hoendervangers</a>
+      
+    </div>
+
+    <div class="collapse navbar-collapse" id="main-navbar">
+      <ul class="nav navbar-nav navbar-right">
+      
+        
+          <li>
+            
+            
+
+
+
+
+
+<a href="/aboutme">About Me</a>
+
+          </li>
+        
+        
+        
+          <li>
+            
+            
+
+
+
+
+
+<a href="/contact">Contact</a>
+
+          </li>
+        
+        
+      </ul>
+    </div>
+
+	
+	<div class="avatar-container">
+	  <div class="avatar-img-border">
+	    <a href="http://bram209.github.io ">
+	      <img class="avatar-img" src="/img/adblock-logo.png" />
+		</a>
+	  </div>
+	</div>
+	
+
+  </div>
+</nav>
+
+
+    <!-- TODO this file has become a mess, refactor it -->
+
+
+
+
+
+<header class="header-section ">
+
+<div class="intro-header no-img">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <div class="post-heading">
+          <h1>A better alternative to Adblock Plus</h1>
+		  
+		    
+			<h2 class="post-subheading">Or is an adblocker the best solution after all?</h2>
+			
+		  
+		  
+		  
+		  <span class="post-meta">Posted on September 7, 2017</span>
+		  
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</header>
+
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+
+      <article role="main" class="blog-post">
+        <p>I have been using AdBlock Plus for years now. After reinstalling my desktop recently, I decided to try something else. We can alter the <code class="highlighter-rouge">hosts</code> file on our PC to blacklist domains.</p>
+
+<h2 class="no_toc" id="table-of-contents">Table of contents</h2>
+
+<ul id="markdown-toc">
+  <li><a href="#how-do-ad-blockers-work" id="markdown-toc-how-do-ad-blockers-work">How do ad blockers work?</a></li>
+  <li><a href="#the-hosts-file" id="markdown-toc-the-hosts-file">The hosts file</a></li>
+  <li><a href="#blocking-ads-trackers--malware" id="markdown-toc-blocking-ads-trackers--malware">Blocking ads, trackers &amp; malware</a></li>
+  <li><a href="#automatically-updating-our-hosts-file" id="markdown-toc-automatically-updating-our-hosts-file">Automatically updating our hosts file</a></li>
+  <li><a href="#verdict" id="markdown-toc-verdict">Verdict</a></li>
+</ul>
+
+<h2 id="how-do-ad-blockers-work">How do ad blockers work?</h2>
+<p>Adblockers filter out unwanted content. These filter rules decide whether it should block/hide an ad or let it through.
+All those filters come from huge lists, the main one being <a href="https://easylist.to/">EasyList</a>. You can specify your own filter rules as well or add another reputable source.</p>
+
+<p>The adblocker compares every HTTP request with all the filter rules. If the URL of such request matches one of the filters, the request is blocked.</p>
+
+<div class="box-note">
+  <p><strong>Pro’s</strong></p>
+  <ul>
+    <li>Versatile, blocking based on URL paths and parameters</li>
+    <li>UI interface (easily disable adblocker on specific sites)</li>
+  </ul>
+
+  <p><strong>Con’s</strong></p>
+  <ul>
+    <li>Slower than the hosts file approach</li>
+  </ul>
+</div>
+
+<h2 id="the-hosts-file">The hosts file</h2>
+<p>A DNS (Domain Name System) translates IP addresses into something more memorable, a domain name. Normally, when you type in a web address, your PC will ping your DNS server to find out the TCP IP address of the server that you are trying to connect to.</p>
+
+<p>The <code class="highlighter-rouge">Hosts file</code> can be used to overwrite the DNS. 
+Let’s see how this works, before discussing why we would like to do this in the first place. We add a new domain filter by appending a new line to our hosts file in the following format: <code class="highlighter-rouge">IP DOMAIN</code>.</p>
+
+<div class="box-note">
+  <p><strong>Pro’s</strong></p>
+  <ul>
+    <li>Faster as it blocks on full hostnames</li>
+    <li>Native - Implemented by the OS in a low overhead language like C</li>
+    <li>No more “Adblocker detected” messages</li>
+    <li>Not limited to just browsers</li>
+  </ul>
+
+  <p><strong>Con’s</strong></p>
+  <ul>
+    <li>Limited in capability</li>
+    <li>Higher upkeep?</li>
+  </ul>
+</div>
+
+<h3 class="no_toc" id="an-example">An example</h3>
+<p>When developing, we run our web apps locally. Let’s say we grow tired of writing <code class="highlighter-rouge">localhost</code> all the time and are looking for a shorter alternative.
+Let’s add a new entry to our hosts file:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>sudo sh -c <span class="s1">'echo "127.0.0.1 localhost" &gt;&gt; /etc/hosts'</span>
+</code></pre>
+</div>
+<p>Note that we need permissions to the hosts file. We use the <code class="highlighter-rouge">-c</code> option so that our commands are read from a string. If we wouldn’t do this, it will only execute the <code class="highlighter-rouge">echo</code> command with special privileges, but not redirecting/appending (<code class="highlighter-rouge">&gt;&gt;</code>) the output to the file.</p>
+
+<p class="box-note">For Unix users, you can find the host file at <code class="highlighter-rouge">/etc/hosts</code>,<br />
+and Windows users can find it at <code class="highlighter-rouge">C:\Windows\System32\drivers\etc\hosts</code>.</p>
+
+<p>Now the domain name <code class="highlighter-rouge">local</code> will translate to our localhost’s address <code class="highlighter-rouge">127.0.0.1</code>
+<img src="/img/hosts-file-example.png" alt="Example of altered hosts file" />
+<br /><br /></p>
+
+<h2 id="blocking-ads-trackers--malware">Blocking ads, trackers &amp; malware</h2>
+<p>We can use this mechanism to our advantage by blocking ads. trackers &amp; malware domains. Luckily there are some great and reputable lists like <a href="http://someonewhocares.org/hosts/">someonewhocares</a>.</p>
+
+<p>We are going to use <a href="https://github.com/zant95/hBlock">hBlock</a>, a script that combines a few good lists together to create the perfect hosts file.
+To install:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>curl <span class="s1">'https://raw.githubusercontent.com/zant95/hblock/master/hblock'</span> -o /tmp/hblock <span class="o">&amp;&amp;</span> <span class="se">\</span>
+  sudo mv /tmp/hblock /usr/local/bin/hblock <span class="o">&amp;&amp;</span> sudo chmod a+rx /usr/local/bin/hblock
+</code></pre>
+</div>
+
+<p>For fish shell users:</p>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code>curl <span class="s1">'https://raw.githubusercontent.com/zant95/hblock/master/hblock'</span> -o /tmp/hblock;  <span class="se">\</span>
+  sudo mv /tmp/hblock /usr/local/bin/hblock; sudo chmod a+rx /usr/local/bin/hblock
+</code></pre>
+</div>
+
+<p>Now run it:</p>
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>hblock
+ + Configuration: 
+   - Hosts location: /etc/hosts
+   - Redirection IP: 0.0.0.0
+   - Backup: no
+   - Lenient: no
+   - Ignore download error: no
+ + Downloading lists... 
+ + Parsing lists... 
+ + Generating hosts file... 
+ + 75883 blacklisted domains! 
+</code></pre>
+</div>
+
+<p class="box-note">You might need to restart your network manager or clear the DNS cache. For restarting the manager in linux: <code class="highlighter-rouge">sudo systemctl restart NetworkManager.service</code></p>
+
+<h2 id="automatically-updating-our-hosts-file">Automatically updating our hosts file</h2>
+<p>The domain lists that we talked about earlier, are updated daily. Therefore, we should update our hosts file daily as well.</p>
+
+<p>Let’s create an automatic task for this. You can create a <a href="https://en.wikipedia.org/wiki/Cron">cronjob</a> for example, but since my distro uses <code class="highlighter-rouge">systemd</code>, I will create a <a href="https://wiki.archlinux.org/index.php/Systemd/Timers">systemd timer</a>.</p>
+
+<p>We need to create 2 files: a <code class="highlighter-rouge">timer</code> and a <code class="highlighter-rouge">service</code>.
+The service will execute the script and the timer is responsible for scheduling this task on a daily basis.</p>
+
+<figure class="code"><figcaption><span>/etc/systemd/system/hblock.timer </span></figcaption>
+<pre class="highlight"><code><span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Run hBlock daily
+
+<span class="o">[</span>Timer]
+<span class="c"># On a daily basis</span>
+<span class="nv">OnCalendar</span><span class="o">=</span>daily 
+<span class="nv">Persistent</span><span class="o">=</span><span class="nb">true</span>     
+<span class="c"># The service it has to execute</span>
+<span class="nv">Unit</span><span class="o">=</span>hblock.service 
+
+<span class="o">[</span>Install]
+<span class="nv">WantedBy</span><span class="o">=</span>timers.target</code></pre>
+</figure>
+
+<p>And the service:</p>
+
+<figure class="code"><figcaption><span>/etc/systemd/system/hblock.service </span></figcaption>
+<pre class="highlight"><code><span class="o">[</span>Unit]
+<span class="nv">Description</span><span class="o">=</span>Update hosts file to block ad, tracker &amp; malware domains
+
+<span class="o">[</span>Service]
+<span class="c"># do a single job and then exit</span>
+<span class="nv">Type</span><span class="o">=</span>oneshot 
+
+<span class="c"># Absolute path to executable</span>
+<span class="nv">ExecStart</span><span class="o">=</span>/usr/local/bin/hblock</code></pre>
+</figure>
+
+<p>Note that you can place comments with the <code class="highlighter-rouge">#</code> prefix, but they <strong>must be on a new line</strong>. All we have to do now, is enabling the timer and we are good to go:</p>
+
+<div class="language-bash highlighter-rouge"><pre class="highlight"><code><span class="gp">&gt; </span>systemctl <span class="nb">enable </span>hblock.timer 
+Created symlink from /etc/systemd/system/timers.target.wants/hblock.timer to /etc/systemd/system/hblock.timer.
+<span class="gp">&gt; </span>systemctl list-timers --all
+NEXT                          LEFT          LAST   PASSED     UNIT                         ACTIVATES
+Fri 2017-09-08 00:00:00 CEST  2h 20min left n/a    n/a        hblock.timer                 hblock.service
+</code></pre>
+</div>
+
+<h2 id="verdict">Verdict</h2>
+
+<p>In the end, the performance difference is probably negligible.
+So if we ignore the performance difference, it basically comes down to 2 things:</p>
+<ul>
+  <li>Which one blocks more ads</li>
+  <li>Which one has the lowest upkeep</li>
+</ul>
+
+<p>The hosts file blacklists an impressive 75883 domains and together with our daily scheduled update task, the upkeep for yourself will be zero. Now it all comes down to how up-to-date and reliable our sources are.</p>
+
+<p>Everything considered this hosts file setup might work out well and is the speedier one of the two. It is not limited to browsers only and you will never get an “Adblocker detected” popup anymore. However, it is questionable how important this small gain in performance is. The safe choice would be to go with an adblocker, as it is more convenient to install and the most versatile of the two.</p>
+
+      </article>
+
+      
+
+      
+        <!-- Check if any share-links are active -->
+
+
+
+
+<section id = "social-share-section">
+  <span class="sr-only">Share: </span>
+
+  
+  <!--- Share on Twitter -->
+    <a href="https://twitter.com/intent/tweet?text=A+better+alternative+to+Adblock+Plus+http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/"
+      class="btn btn-social-icon btn-twitter" title="Share on Twitter">
+      <span class="fa fa-fw fa-twitter" aria-hidden="true"></span>
+      <span class="sr-only">Twitter</span>
+    </a>
+  
+
+  
+  <!--- Share on Facebook -->
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/"
+      class="btn btn-social-icon btn-facebook" title="Share on Facebook">
+      <span class="fa fa-fw fa-facebook" aria-hidden="true"></span>
+      <span class="sr-only">Facebook</span>
+    </a>
+  
+
+  
+
+  
+  <!--- Share on LinkedIn -->
+    <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://bram209.github.io/2017-09-07-a-better-alternative-to-adblock-plus/"
+      class="btn btn-social-icon btn-linkedin" title="Share on LinkedIn">
+      <span class="fa fa-fw fa-linkedin" aria-hidden="true"></span>
+      <span class="sr-only">LinkedIn</span>
+    </a>
+  
+
+</section>
+
+
+
+      
+
+      <ul class="pager blog-pager">
+        
+        <li class="previous">
+          <a href="/2017-08-30-tic-tac-toe-in-phoenix-vue-js/" data-toggle="tooltip" data-placement="top" title="Tic-Tac-Toe with Phoenix & Vue [Part 1]">&larr; Previous Post</a>
+        </li>
+        
+        
+      </ul>
+
+      
+        <div class="disqus-comments">
+          
+<div class="comments">
+	<div id="disqus_thread"></div>
+	<script type="text/javascript">
+	    var disqus_shortname = 'brams-blog';
+	    /* ensure that pages with query string get the same discussion */
+            var url_parts = window.location.href.split("?");
+            var disqus_url = url_parts[0];	    
+	    (function() {
+	        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+	        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+	        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	    })();
+	</script>
+	<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+
+
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+    <footer>
+  <div class="container beautiful-jekyll-footer">
+    <div class="row">
+      <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+        <ul class="list-inline text-center footer-links">
+          
+          
+          <li>
+            <a href="https://github.com/bram209" title="GitHub">
+              <span class="fa-stack fa-lg" aria-hidden="true">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+              </span>
+              <span class="sr-only">GitHub</span>
+            </a>
+          </li>
+          
+		  
+	  
+      
+		  
+          <li>
+            <a href="mailto:bram.hoendervangers@gmail.com" title="Email me">
+              <span class="fa-stack fa-lg" aria-hidden="true">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+              </span>
+              <span class="sr-only">Email me</span>
+            </a>
+          </li>
+          
+		  
+          <li>
+            <a href="https://linkedin.com/in/bram-hoendervangers-9616bbba" title="LinkedIn">
+              <span class="fa-stack fa-lg" aria-hidden="true">
+                <i class="fa fa-circle fa-stack-2x"></i>
+                <i class="fa fa-linkedin fa-stack-1x fa-inverse"></i>
+              </span>
+              <span class="sr-only">LinkedIn</span>
+            </a>
+          </li>
+          
+		  
+		  
+      
+      
+      
+      
+      
+		  
+      
+      
+      
+        </ul>
+        <p class="copyright text-muted">
+		  Bram Hoendervangers
+		  &nbsp;&bull;&nbsp;
+		  2017
+
+		  
+	    </p>
+	        <!-- Please don't remove this, keep my open source work credited :) -->
+		<p class="theme-by text-muted">
+		  Theme by
+		  <a href="http://deanattali.com/beautiful-jekyll/">beautiful-jekyll</a>
+		</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+  
+    
+
+
+
+
+
+
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+      <script>
+      	if (typeof jQuery == 'undefined') {
+      	  document.write('<script src="/js/jquery-1.11.2.min.js"></scr' + 'ipt>');
+      	}
+      </script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/bootstrap.min.js"></script>
+    
+  
+    <!-- doing something a bit funky here because I want to be careful not to include JQuery twice! -->
+    
+	<script src="/js/main.js"></script>
+    
+  
+
+
+
+	<!-- Google Analytics -->
+	<script>
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+		ga('create', 'UA-105670561-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+	<!-- End Google Analytics -->
+
+
+  
+  </body>
+</html>
